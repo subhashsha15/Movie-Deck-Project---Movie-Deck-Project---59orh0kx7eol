@@ -1,1 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./styles.css">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="./index.js"></script>
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <title>Movie Deck</title>
+</head>
+
+<body onload="fetchData()">
+    <header>
+        <h1>Movie Deck</h1>
+        <div>
+            <form class="form-inline">
+                <input class="form-control" type="text" name="movie" placeholder="Search by name"
+                    oninput="searchMovies(this)">
+                <select class="form-control" name="rating-release" onchange="sortMovies(this)">
+                    <option value="rating-desc">rating-desc</option>
+                    <option value="rating-asc">rating-asc</option>
+                    <option value="release-desc">release-desc</option>
+                    <option value="release-asc">release-asc</option>
+                </select>
+            </form>
+        </div>
+    </header>
+    <section>
+        <div id="card-grid" class="card-grid"></div>
+    </section>
+    <footer>
+        &copy; 2023 Movie Deck
+    </footer>
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="./App.js"></script>
+</body>
+
+</html>
