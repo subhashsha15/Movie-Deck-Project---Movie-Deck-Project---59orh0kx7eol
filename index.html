@@ -2,12 +2,12 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./styles.css">
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./styles.css" />
     <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" />
     <script src="./index.js"></script>
     <!-- jQuery library -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
@@ -22,7 +22,7 @@
         <div>
             <form class="form-inline">
                 <input class="form-control" type="text" name="movie" placeholder="Search by name"
-                    oninput="searchMovies(this)">
+                    oninput="searchMovies(this)" />
                 <select class="form-control" name="rating-release" onchange="sortMovies(this)">
                     <option value="rating-desc">rating-desc</option>
                     <option value="rating-asc">rating-asc</option>
@@ -33,11 +33,22 @@
         </div>
     </header>
     <section>
-        <div id="card-grid" class="card-grid"></div>
+        <div class="container">
+            <ul class="nav nav-tabs">
+                <li class="active"><a data-toggle="tab" href="#all-movies">All Movies</a></li>
+                <li><a data-toggle="tab" href="#favorites">Favorites</a></li>
+            </ul>
+            <div class="tab-content">
+                <div id="all-movies" class="tab-pane fade in active">
+                    <div id="all-movies-grid" class="card-grid"></div>
+                </div>
+                <div id="favorites" class="tab-pane fade">
+                    <div id="favorite-grid" class="card-grid"></div>
+                </div>
+            </div>
+        </div>
     </section>
-    <footer>
-        &copy; 2023 Movie Deck
-    </footer>
+    <footer>&copy; 2023 Movie Deck</footer>
     <!-- jQuery library -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
     <!-- Latest compiled JavaScript -->

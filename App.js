@@ -1,52 +1,90 @@
-var movies = [], cardGrid;
+var movies = [], allMoviesGrid, favMovie = [], favGrid;
+class Movie {
+    constructor(id, title, releaseDate, ratings, voteCount, posterPath) {
+        this.id = id;
+        this.title = title;
+        this.releaseDate = releaseDate;
+        this.ratings = ratings;
+        this.voteCount = voteCount;
+        this.posterPath = posterPath;
+    }
+    addToFavorite() {
+        favMovie.push(this)
+        reRenderCardGrid(favMovie, favGrid);
+    }
+    removeFromFavorite() {
+        favMovie = favMovie.filter(movie => movie.id !== this.id);
+        reRenderCardGrid(favMovie, favGrid);
+        document.getElementById(`${this.id}-allMoviesGrid`).innerText = 'Add to Favorites';
+    }
+}
 const fetchData = async () => {
     const res = await fetch('https://api.themoviedb.org/3/movie/top_rated?api_key=f531333d637d0c44abc85b3e74db2186&language=en-US&page=1')
-    const data = await res.json();
-    movies.push(...data.results);
-    cardGrid = document.getElementById('card-grid');
+    const movieData = await res.json();
+    movieData.results.forEach(movie => {
+        movies.push(new Movie(movie.id, movie.title, movie.release_date, movie.vote_average, movie.vote_count, movie.poster_path));
+    })
+    allMoviesGrid = document.getElementById('all-movies-grid');
+    favGrid = document.getElementById('favorite-grid');
     sortMovies({ value: 'rating-desc' })
 }
 const showMore = ({ metadata, showMoreBtn }) => {
     showMoreBtn.innerText = showMoreBtn.innerText === 'Show More' ? 'Show less' : 'Show More';
     metadata.style.display = metadata.style.display === 'block' ? 'none' : 'block'
 }
-const createMovieCard = ({ id, title: movieTitle, release_date, vote_average, vote_count, poster_path }) => {
+const createMovieCard = (movie, cardGrid) => {
+    const { id, title, releaseDate, ratings, voteCount, posterPath } = movie;
     const card = document.createElement('div');
-    card.classList.add('card')
+    card.classList.add('card');
     const poster = document.createElement('img');
-    poster.src = `https://image.tmdb.org/t/p/w500${poster_path}`;
-    const title = document.createElement('h3');
-    title.innerText = movieTitle;
+    poster.src = `https://image.tmdb.org/t/p/w500${posterPath}`;
+    const movieTitle = document.createElement('h3');
+    movieTitle.innerText = title;
+    const favoriteBtn = document.createElement('button');
+    favoriteBtn.id = `${id}-${cardGrid === allMoviesGrid ? 'allMoviesGrid' : 'favGrid'}`
+    favoriteBtn.className = 'btn btn-primary btn-md';
+    favoriteBtn.style.cssText = `
+display: block;
+margin: auto;
+margin-bottom: 0.5em;
+`;
+    favoriteBtn.innerText = cardGrid === allMoviesGrid ? 'Add to Favorites' : 'Remove from Favorites';
+    favoriteBtn.addEventListener('click', () => toggleFavMovie({ movie, favoriteBtn }))
     const metadata = document.createElement('div');
     metadata.style.display = 'none';
     const relDate = document.createElement('div');
-    relDate.innerText = `Release Date-${release_date}`;
-    const ratings = document.createElement('div');
-    ratings.innerText = `Avg Rating-${vote_average}`;
+    relDate.innerText = `Release Date-${releaseDate}`;
+    const rate = document.createElement('div');
+    rate.innerText = `Avg Rating-${ratings}`;
     const vote = document.createElement('div');
-    vote.innerText = `Number of Ratings-${vote_count}`;
-    metadata.append(relDate, ratings, vote)
+    vote.innerText = `Number of Ratings-${voteCount}`;
+    metadata.append(relDate, rate, vote)
     const showMoreBtn = document.createElement('button');
     showMoreBtn.className = 'btn btn-primary btn-md';
+    showMoreBtn.style.cssText = `
+display: block;
+margin: auto;
+`;
     showMoreBtn.innerText = 'Show More';
     showMoreBtn.addEventListener('click', () => showMore({ metadata, showMoreBtn }))
-    card.append(poster, title, metadata, showMoreBtn)
+    card.append(poster, movieTitle, favoriteBtn, metadata, showMoreBtn)
     cardGrid.appendChild(card);
 }
-const reRenderCardGrid = (updatedMoviesList) => {
-    cardGrid.innerHTML = '';
-    updatedMoviesList.forEach(movie => createMovieCard(movie))
+const reRenderCardGrid = (updatedMoviesList, movieGrid) => {
+    movieGrid.innerHTML = '';
+    updatedMoviesList.forEach(movie => createMovieCard(movie, movieGrid))
 }
 const searchMovies = (elem) => {
-    reRenderCardGrid(movies.filter(movie => movie.title.toLowerCase().includes(elem.value.toLowerCase())))
+    const filteredMovies = movies.filter(movie => movie.title.toLowerCase().includes(elem.value.toLowerCase()));
+    reRenderCardGrid(filteredMovies, allMoviesGrid)
 }
 const sortByRating = (sortOrder) => {
-    const sortedMovies = movies.sort((movie1, movie2) => sortOrder === 'asc' ? movie1.vote_count - movie2.vote_count : movie2.vote_count - movie1.vote_count)
-    reRenderCardGrid(sortedMovies)
+    const sortedMovies = movies.sort((movie1, movie2) => sortOrder === 'asc' ? movie1.voteCount - movie2.voteCount : movie2.voteCount - movie1.voteCount)
+    reRenderCardGrid(sortedMovies, allMoviesGrid)
 }
 const sortByRelease = (sortOrder) => {
-    const sortedMovies = movies.sort((movie1, movie2) => sortOrder === 'asc' ? movie1.release_date.localeCompare(movie2.release_date) : movie2.release_date.localeCompare(movie1.release_date))
-    reRenderCardGrid(sortedMovies)
+    const sortedMovies = movies.sort((movie1, movie2) => sortOrder === 'asc' ? movie1.releaseDate.localeCompare(movie2.releaseDate) : movie2.releaseDate.localeCompare(movie1.releaseDate))
+    reRenderCardGrid(sortedMovies, allMoviesGrid)
 }
 const sortMovies = (elem) => {
     switch (elem.value) {
@@ -62,5 +100,14 @@ const sortMovies = (elem) => {
         case 'release-asc':
             sortByRelease('asc')
             break;
+    }
+}
+const toggleFavMovie = ({ movie, favoriteBtn }) => {
+    if (favoriteBtn.innerText === 'Add to Favorites') {
+        favoriteBtn.innerText = 'Remove from Favorites';
+        movie.addToFavorite();
+    } else {
+        favoriteBtn.innerText = 'Add to Favorites';
+        movie.removeFromFavorite();
     }
 }

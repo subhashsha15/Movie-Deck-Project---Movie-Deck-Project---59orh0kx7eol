@@ -21,7 +21,6 @@ h1 {
 
 section {
     background: lightblue;
-    padding: 0 20%;
 }
 
 .card-grid {
@@ -31,7 +30,7 @@ section {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     column-gap: 10px;
-    padding: 10px;
+    padding: 10px 0;
 }
 
 .card {
